@@ -1,12 +1,26 @@
 package com.example.mobliusstatus
 
+import android.app.Activity.RESULT_OK
+import android.content.Context
+import android.content.Intent
 import android.media.MediaScannerConnection
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.storage.StorageManager
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.documentfile.provider.DocumentFile
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,6 +37,7 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    lateinit var filelist:ArrayList<DocumentFile>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +51,6 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
 
 
 
@@ -57,10 +71,137 @@ class HomeFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode== RESULT_OK){
+            val treeUri = data?.data
+
+            val sharedPreferences = requireActivity().getSharedPreferences("DATA_PATH",
+                AppCompatActivity.MODE_PRIVATE
+            )
+            val myEdit = sharedPreferences.edit()
+            myEdit.putString("PATH", treeUri.toString())
+            myEdit.apply()
+//        text = treeUri.toString()
+
+            if (treeUri!=null){
+                requireActivity().contentResolver.takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val files = DocumentFile.fromTreeUri(requireContext(), treeUri)
+                for (file in files!!.listFiles()){
+                    if (!file.name!!.endsWith(".nomedia")){
+                        filelist.add(file)
+                    }
+
+                }
+            }
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun getFolderPermission(){
+        val storageManager = requireActivity().getSystemService(Context.STORAGE_SERVICE) as StorageManager
+        val intent = storageManager.primaryStorageVolume.createOpenDocumentTreeIntent()
+        val targetDir = "Android%2Fmedia%2Fcom.whatsapp%2FWhatsApp%2FMedia%2F.Statuses"
+        var uri = intent.getParcelableExtra<Uri>("android.provider.extra.INITIAL_URI") as Uri
+        var scheme = uri.toString()
+        scheme = scheme.replace("/root/", ".tree/")
+        scheme += "%3A$targetDir"
+        uri = Uri.parse(scheme)
+        intent.putExtra("android.provider.extra.INITIAL_URI", uri)
+        intent.putExtra("android.provider.extra.SHOW_ADVANCED", true)
+        startActivityForResult(intent, 1233)
+    }
+
+    private fun saveStatus(statusFile: File) {
+        // Copy the file to your app's directory
+        val destFile = File(requireContext().getExternalFilesDir(null), statusFile.name)
+        statusFile.copyTo(destFile)
+
+        // Notify the media scanner to update the gallery
+        MediaScannerConnection.scanFile(
+            requireContext(),
+            arrayOf(destFile.toString()),
+            null,
+            null
+        )
+    }
+    private fun getStatusFiles(): List<File> {
+        val statusDir = File(Environment.getExternalStorageDirectory().absolutePath + "/")
+        Log.d("location", statusDir.toString())
+        return if (statusDir.exists()) {
+            statusDir.listFiles()?.toList() ?: emptyList()
+        } else {
+            emptyList()
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
 
+        val statusDirectory = File(Environment.getExternalStorageDirectory().absolutePath + "Android/media/com.whatsapp/WhatsApp/Media/.Statuses")
+//        Android/media/com.whatsapp/WhatsApp/Media/.Statuses
+        Log.d("location", statusDirectory.toString())
+        Toast.makeText(view.context, statusDirectory.toString(), Toast.LENGTH_SHORT).show()
+        val statusFiles = statusDirectory?.listFiles()
+//        val statusFiles = statusDirectory.list()
+//        if (statusFiles != null) {
+//            for (file in statusFiles){
+//                filelist.add(file)
+//                Log.d("location", file.name)
+//            }
+//        }
+
+        filelist = ArrayList()
+
+
+
+//        val fileArray = ArrayList<DocumentFile>()
+//        getFolderPermission()
+        val resultForPermission:Boolean = readDataFromPerfs()
+        if(resultForPermission){
+            val sh = requireActivity().getSharedPreferences("DATA_PATH", AppCompatActivity.MODE_PRIVATE)
+            val uriPath = sh.getString("PATH","")
+            requireActivity().contentResolver.takePersistableUriPermission(Uri.parse(uriPath),Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+            if (uriPath!=null){
+                val files = DocumentFile.fromTreeUri(requireContext(), Uri.parse(uriPath))
+                for (file in files!!.listFiles()){
+                    if (!file.name!!.endsWith(".nomedia")){
+                        filelist.add(file)
+                    }
+                }
+            }
+        }else{
+            readDataFromPerfs()
+        }
+
+        val adapter = StatusRVAdapter(view.context, filelist)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
+        val layoutManager = GridLayoutManager(view.context, 2)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
     }
+
+    private fun readDataFromPerfs(): Boolean {
+        val sh = requireActivity().getSharedPreferences("DATA_PATH", AppCompatActivity.MODE_PRIVATE)
+        val uriPath = sh.getString("PATH","")
+        if(uriPath!=null){
+            if (uriPath.isEmpty()){
+                return false
+            }
+        }
+        return true
+    }
+
+
+
+
+
+
+
+
+
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -80,5 +221,8 @@ class HomeFragment : Fragment() {
                 }
             }
     }
+
+
 }
+
 

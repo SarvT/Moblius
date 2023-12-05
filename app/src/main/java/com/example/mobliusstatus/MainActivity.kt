@@ -1,19 +1,30 @@
 package com.example.mobliusstatus
 
+import android.app.Activity.RESULT_OK
 import android.content.ClipData.Item
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.os.storage.StorageManager
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
+import androidx.documentfile.provider.DocumentFile
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -21,7 +32,7 @@ import java.io.File
 
 public val storagePermissionCode = 1211
 class MainActivity : AppCompatActivity() {
-
+public lateinit var filelist:ArrayList<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
 
 //        start of bnv
+        fragmentManager.beginTransaction().replace(R.id.nav_view, HomeFragment()).commit()
         navigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.action_home -> {
@@ -54,15 +66,43 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+
             }
         }
 //        end of bnv
         checkForPermisiion()
-
+//        val fileArray = ArrayList<Any>()
+//        val resultForPermission:Boolean = readDataFromPerfs()
+//        if(resultForPermission){
+//            val sh = getSharedPreferences("DATA_PATH", MODE_PRIVATE)
+//            val uriPath = sh.getString("PATH","")
+//            contentResolver.takePersistableUriPermission(Uri.parse(uriPath),Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//
+//            if (uriPath!=null){
+//                val files = DocumentFile.fromTreeUri(applicationContext, Uri.parse(uriPath))
+//                for (file in files!!.listFiles()){
+//                    if (!file.name!!.endsWith(".nomedia")){
+//                        fileArray.add(file)
+//                    }
+//                }
+//            }
+//        }else{
+//            readDataFromPerfs()
+//        }
 
     }
 
 
+private fun readDataFromPerfs(): Boolean {
+    val sh = getSharedPreferences("DATA_PATH", MODE_PRIVATE)
+    val uriPath = sh.getString("PATH","")
+    if(uriPath!=null){
+        if (uriPath.isEmpty()){
+            return false
+        }
+    }
+        return true
+}
 
     private fun checkForPermisiion(){
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
@@ -90,6 +130,34 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+//    @RequiresApi(Build.VERSION_CODES.Q)
+//    fun getFolderPermission(){
+//        val storageManager = application.getSystemService(Context.STORAGE_SERVICE) as StorageManager
+//        val intent = storageManager.primaryStorageVolume.createOpenDocumentTreeIntent()
+//        val targetDir = "Android%2Fmedia%2Fcom.whatsapp%2FWhatsApp%2FMedia%2F.Statuses"
+//        var uri = intent.getParcelableExtra<Uri>("android.provider.extra.INITIAL_URI") as Uri
+//        var scheme = uri.toString()
+//        scheme = scheme.replace("/root/", ".tree/")
+//        scheme += "%3A$targetDir"
+//        uri = Uri.parse(scheme)
+//        intent.putExtra("android.provider.extra.INITIAL_URI", uri)
+//        intent.putExtra("android.provider.extra.SHOW_ADVANCED", true)
+//        startActivityForResult(intent, 1233)
+//    }
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (resultCode== RESULT_OK){
+//            val treeUri = data?.data
+////            text = treeUri.toString()
+//
+//            if (treeUri!=null){
+//                contentResolver.takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//                val file = DocumentFile.fromTreeUri(applicationContext, treeUri)
+//            }
+//        }
+//    }
 
 
     fun View.showSnackbar(
@@ -136,5 +204,44 @@ class MainActivity : AppCompatActivity() {
             emptyList()
         }
     }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (resultCode== RESULT_OK){
+//            val treeUri = data?.data
+//
+//            val sharedPreferences = getSharedPreferences("DATA_PATH", MODE_PRIVATE)
+//            val myEdit = sharedPreferences.edit()
+//            myEdit.putString("PATH", treeUri.toString())
+//            myEdit.apply()
+////        text = treeUri.toString()
+//
+//            if (treeUri!=null){
+//                contentResolver.takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//                val files = DocumentFile.fromTreeUri(applicationContext, treeUri)
+//                for (file in files!!.listFiles()){
+//                    if (!file.name!!.endsWith(".nomedia")){
+//                        filelist.add(file)
+//                    }
+//
+//                }
+//            }
+//        }
+//    }
+//    @RequiresApi(Build.VERSION_CODES.Q)
+//    fun getFolderPermission(){
+//        val storageManager = application.getSystemService(Context.STORAGE_SERVICE) as StorageManager
+//        val intent = storageManager.primaryStorageVolume.createOpenDocumentTreeIntent()
+//        val targetDir = "Android%2Fmedia%2Fcom.whatsapp%2FWhatsApp%2FMedia%2F.Statuses"
+//        var uri = intent.getParcelableExtra<Uri>("android.provider.extra.INITIAL_URI") as Uri
+//        var scheme = uri.toString()
+//        scheme = scheme.replace("/root/", ".tree/")
+//        scheme += "%3A$targetDir"
+//        uri = Uri.parse(scheme)
+//        intent.putExtra("android.provider.extra.INITIAL_URI", uri)
+//        intent.putExtra("android.provider.extra.SHOW_ADVANCED", true)
+//        startActivityForResult(intent, 1233)
+//    }
 }
+
 
