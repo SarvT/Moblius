@@ -26,7 +26,7 @@ The Mobilus is a dedicated Kotlin-based application designed exclusively for sav
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/whatsapp-status-saver.git
+   git clone https://github.com/SarvT/Moblius
    ```
 
 2. Open the project in Android Studio.
@@ -50,6 +50,7 @@ The Mobilus is a dedicated Kotlin-based application designed exclusively for sav
 
 ![Screenshot 2](screenshots/screenshot2.png)
 ![image](https://github.com/SarvT/Moblius/assets/91484197/3daa981d-d7e1-4e73-ab7a-888796e4897f)
+
 
 *Caption for Screenshot 2*
 
