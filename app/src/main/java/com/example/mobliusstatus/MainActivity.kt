@@ -1,30 +1,17 @@
 package com.example.mobliusstatus
 
-import android.app.Activity.RESULT_OK
-import android.content.ClipData.Item
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
-import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
-import android.os.storage.StorageManager
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.ContextCompat
-import androidx.core.content.edit
-import androidx.documentfile.provider.DocumentFile
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -111,6 +98,7 @@ private fun readDataFromPerfs(): Boolean {
 
         }
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

@@ -100,10 +100,11 @@ class HomeFragment : Fragment() {
     fun getFolderPermission(){
         val storageManager = requireActivity().getSystemService(Context.STORAGE_SERVICE) as StorageManager
         val intent = storageManager.primaryStorageVolume.createOpenDocumentTreeIntent()
-        val targetDir = "Android%2Fmedia%2Fcom.whatsapp%2FWhatsApp%2FMedia%2F.Statuses"
+        val targetDir = "Android/media/com.whatsapp/WhatsApp/Media/.Statuses"
+//        val targetDir = "Android%2Fmedia%2Fcom.whatsapp%2FWhatsApp%2FMedia%2F.Statuses"
         var uri = intent.getParcelableExtra<Uri>("android.provider.extra.INITIAL_URI") as Uri
         var scheme = uri.toString()
-        scheme = scheme.replace("/root/", ".tree/")
+        scheme = scheme.replace("/root/", "/tree/")
         scheme += "%3A$targetDir"
         uri = Uri.parse(scheme)
         intent.putExtra("android.provider.extra.INITIAL_URI", uri)
@@ -138,25 +139,10 @@ class HomeFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        val statusDirectory = File(Environment.getExternalStorageDirectory().absolutePath + "Android/media/com.whatsapp/WhatsApp/Media/.Statuses")
-//        Android/media/com.whatsapp/WhatsApp/Media/.Statuses
-        Log.d("location", statusDirectory.toString())
-        Toast.makeText(view.context, statusDirectory.toString(), Toast.LENGTH_SHORT).show()
-        val statusFiles = statusDirectory?.listFiles()
-//        val statusFiles = statusDirectory.list()
-//        if (statusFiles != null) {
-//            for (file in statusFiles){
-//                filelist.add(file)
-//                Log.d("location", file.name)
-//            }
-//        }
+//        val statusDirectory = File(Environment.getExternalStorageDirectory().absolutePath + "Android/media/com.whatsapp/WhatsApp/Media/.Statuses")
 
         filelist = ArrayList()
 
-
-
-//        val fileArray = ArrayList<DocumentFile>()
-//        getFolderPermission()
         val resultForPermission:Boolean = readDataFromPerfs()
         if(resultForPermission){
             val sh = requireActivity().getSharedPreferences("DATA_PATH", AppCompatActivity.MODE_PRIVATE)
@@ -172,6 +158,7 @@ class HomeFragment : Fragment() {
                 }
             }
         }else{
+            getFolderPermission()
             readDataFromPerfs()
         }
 
