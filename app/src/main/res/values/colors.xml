@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="choco">#6B240C</color>
+    <color name="chocoVar">#4d0200</color>
+    <color name="mBlue">#1b62ba</color>
+    <color name="mBlueVar">#45A2F0</color>
 </resources>

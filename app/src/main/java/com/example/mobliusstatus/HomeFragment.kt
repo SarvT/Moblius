@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputBinding
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,7 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
@@ -38,6 +40,8 @@ class HomeFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     lateinit var filelist:ArrayList<DocumentFile>
+    private lateinit var topAppBar: MaterialToolbar
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +72,8 @@ class HomeFragment : Fragment() {
 //
 //        </androidx.viewpager.widget.ViewPager>
         // Inflate the layout for this fragment
+
+
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -141,7 +147,14 @@ class HomeFragment : Fragment() {
 
 //        val statusDirectory = File(Environment.getExternalStorageDirectory().absolutePath + "Android/media/com.whatsapp/WhatsApp/Media/.Statuses")
 
+//        topAppBar = view.findViewById(R.id.topAppBar)
+
+        // Set the title for this fragment
+//        val activity = requireActivity() as? AppCompatActivity
+//        activity?.supportActionBar?.title = "Your Fragment Title"
+
         filelist = ArrayList()
+        (activity as AppCompatActivity?)!!.supportActionBar?.title = "Home"
 
         val resultForPermission:Boolean = readDataFromPerfs()
         if(resultForPermission){

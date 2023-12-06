@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputBinding
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -21,8 +22,10 @@ public val storagePermissionCode = 1211
 class MainActivity : AppCompatActivity() {
 public lateinit var filelist:ArrayList<Any>
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
         val navigation = findViewById<ViewPager>(R.id.navigation) as BottomNavigationView
@@ -41,6 +44,7 @@ public lateinit var filelist:ArrayList<Any>
                 R.id.action_img -> {
                     fragmentManager.beginTransaction().replace(R.id.nav_view, ImgFragment())
                         .commit()
+
                     true
                 }
                 R.id.action_vid -> {
@@ -53,6 +57,7 @@ public lateinit var filelist:ArrayList<Any>
                         .commit()
                     true
                 }
+
 
             }
         }

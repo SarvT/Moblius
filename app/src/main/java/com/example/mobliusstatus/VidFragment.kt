@@ -109,6 +109,7 @@ class VidFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         filelist = ArrayList()
+        (activity as AppCompatActivity?)!!.supportActionBar?.title = "Videos"
 
         val resultForPermission:Boolean = readDataFromPerfs()
         if(resultForPermission){

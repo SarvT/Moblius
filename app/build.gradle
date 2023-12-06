@@ -7,6 +7,10 @@ android {
     namespace 'com.example.mobliusstatus'
     compileSdk 33
 
+    buildFeatures {
+        viewBinding true
+    }
+
     defaultConfig {
         applicationId "com.example.mobliusstatus"
         minSdk 23
@@ -16,6 +20,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+
 
     buildTypes {
         release {

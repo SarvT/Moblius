@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/group_main">
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home"
+            android:icon="@drawable/home_icon"/>
+    </group>
+
+
+    <group android:id="@+id/group_settings">
+        <item
+            android:id="@+id/nav_notifications"
+            android:title="Notifications"
+            android:icon="@drawable/icon_notifications"/>
+        <item
+            android:id="@+id/nav_settings"
+            android:title="Settings"
+            android:icon="@drawable/icon_settings"/>
+        <item
+            android:id="@+id/nav_about"
+            android:title="About"
+            android:icon="@drawable/icon_about"/>
+    </group>
+
+    </menu>
