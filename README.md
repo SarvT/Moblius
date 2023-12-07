@@ -44,8 +44,7 @@ The Mobilus is a dedicated Kotlin-based application designed exclusively for sav
 
 ![Screenshot 1](screenshots/screenshot1.png)
 
-![Screenshot_2](https://github.com/SarvT/Moblius/assets/91484197/16ce45a6-f84d-4952-8abd-d1f9ab8ff240)
-<img src="https://github.com/SarvT/Moblius/assets/91484197/16ce45a6-f84d-4952-8abd-d1f9ab8ff240" alt="Description" width="200" height="200">
+<img src="https://github.com/SarvT/Moblius/assets/91484197/16ce45a6-f84d-4952-8abd-d1f9ab8ff240" alt="Description" width="720" height="1280">
 
 
 *Caption for Screenshot 1*
